@@ -13,7 +13,7 @@ type GameActions = {
   move: (controls: { x: number, y: number}) => void
 }
 
-type Controls = {
+export type Controls = {
   x: number
   y: number
 }
@@ -23,8 +23,30 @@ declare global {
 }
 
 export const SPACE_WIDTH = 250
-export const SPACE_HEIGHT = 140
+export const SPACE_HEIGHT = 600
 export const SHIP_SIZE = 10
+const POWER_SCALE = 100
+
+function createEdge(
+  world: physics.World,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+) {
+  const edge = physics.createRectangle(
+    world,
+    { x: x + width / 2, y: y + height / 2 },
+    width,
+    height,
+    0,
+    0.5,
+    0.9
+  )
+  physics.addBody(world, edge)
+}
+
+
 
 Rune.initLogic({
   minPlayers: 1,
@@ -32,7 +54,10 @@ Rune.initLogic({
   updatesPerSecond: 30,
   reactive: false,
   update: ({ game }) => {
-    const collisions = physics.worldStep(60, game.world)
+    // propel-js likes a 60fps game loop since it keeps the iterations high so run it
+    // twice since the game logic is configured to run at 30fps
+    physics.worldStep(60, game.world)
+    physics.worldStep(60, game.world)
   },
   setup: (allPlayerIds) => {
     const world = physics.createWorld({ x: 0, y: 0 }, 20)
@@ -58,13 +83,23 @@ Rune.initLogic({
 
       physics.addBody(world, player)
 
-      player.velocity.y = 25
+      player.velocity.y = 100
 
       // physics.applyVelocity(player, {
       //   x: 200,
       //   y: 200,
       // })
     })
+
+    // Top
+    createEdge(world, 0, 0, SPACE_WIDTH, 20)
+    // Bottom
+    createEdge(world, 0, SPACE_HEIGHT - 20, SPACE_WIDTH, 20)
+    // Left
+    createEdge(world, 0, 0, 20, SPACE_HEIGHT)
+    // Right
+    // TODO: why isn't space width the right value here for position
+    createEdge(world, SPACE_WIDTH - 20, 0, 20, SPACE_HEIGHT)
 
     const gameState: GameState = {
       world,
@@ -80,9 +115,11 @@ Rune.initLogic({
       const playerBody = game.world.dynamicBodies.find((b) => b.id === playerBodies[playerId])
       if (playerBody) {
         physics.applyVelocity(playerBody, {
-          x: controls.x,
-          y: controls.y,
+          x: controls.x * POWER_SCALE,
+          y: controls.y * POWER_SCALE * -1,
         })
+
+        // console.log("controls:", controls)
       }
     },
   },
