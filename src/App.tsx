@@ -21,10 +21,22 @@ const draw = (
   }
 }
 
+const getCanvasDimensions = () => {
+  // whats the right way to do this?
+  const width = window.innerWidth
+  const height = window.innerHeight
+
+  return {
+    width,
+    height,
+  }
+}
+
 function App() {
   const [game, setGame] = useState<GameState>()
   const [yourPlayerId, setYourPlayerId] = useState<PlayerId | undefined>()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const {height, width} = getCanvasDimensions()
   const [canvasContext, setCanvasContext] = useState<CanvasRenderingContext2D>()
 
   useEffect(() => {
@@ -54,7 +66,7 @@ function App() {
 
   const { winCombo, cells, lastMovePlayerId, playerIds, freeCells } = game
 
-  return <canvas ref={canvasRef} />
+  return <canvas width={width} height={height} ref={canvasRef} />
 }
 
 export default App
