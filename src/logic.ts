@@ -10,7 +10,7 @@ export interface GameState {
 }
 
 type GameActions = {
-  move: (controls: { x: number, y: number}) => void
+  move: (controls: { x: number; y: number }) => void
 }
 
 export type Controls = {
@@ -22,8 +22,8 @@ declare global {
   const Rune: RuneClient<GameState, GameActions>
 }
 
-export const SPACE_WIDTH = 250
-export const SPACE_HEIGHT = 600
+export const SPACE_WIDTH = 400
+export const SPACE_HEIGHT = 700
 export const SHIP_SIZE = 10
 const POWER_SCALE = 100
 
@@ -45,8 +45,6 @@ function createEdge(
   )
   physics.addBody(world, edge)
 }
-
-
 
 Rune.initLogic({
   minPlayers: 1,
@@ -73,9 +71,9 @@ Rune.initLogic({
       ) as physics.DynamicRigidBody
 
       player.data = {
-        col: 'orange',
+        col: "orange",
         num: 0,
-        ox: (SPACE_WIDTH / 6),
+        ox: SPACE_WIDTH / 6,
         oy: SPACE_HEIGHT / 2,
       }
 
@@ -92,14 +90,14 @@ Rune.initLogic({
     })
 
     // Top
-    createEdge(world, 0, 0, SPACE_WIDTH, 20)
+    createEdge(world, 0, 0, SPACE_WIDTH, -20)
     // Bottom
     createEdge(world, 0, SPACE_HEIGHT - 20, SPACE_WIDTH, 20)
     // Left
-    createEdge(world, 0, 0, 20, SPACE_HEIGHT)
+    createEdge(world, 0, 0, -20, SPACE_HEIGHT)
     // Right
     // TODO: why isn't space width the right value here for position
-    createEdge(world, SPACE_WIDTH - 20, 0, 20, SPACE_HEIGHT)
+    createEdge(world, SPACE_WIDTH - 20, 20, 20, SPACE_HEIGHT)
 
     const gameState: GameState = {
       world,
@@ -108,11 +106,13 @@ Rune.initLogic({
     }
 
     return gameState
-},
+  },
   actions: {
     move: (controls: Controls, { game, playerId }) => {
       const playerBodies = game.playerBodies
-      const playerBody = game.world.dynamicBodies.find((b) => b.id === playerBodies[playerId])
+      const playerBody = game.world.dynamicBodies.find(
+        (b) => b.id === playerBodies[playerId]
+      )
       if (playerBody) {
         physics.applyVelocity(playerBody, {
           x: controls.x * POWER_SCALE,
