@@ -3,6 +3,9 @@ import { Controls, GameState, SPACE_HEIGHT, SPACE_WIDTH } from "./logic.ts"
 import { physics } from "propel-js"
 
 import { Joystick } from "./Joystick.tsx"
+import { PlayerId } from "rune-sdk"
+import shipDome from "./assets/spaceship_dome.png"
+import shipSaucer from "./assets/ship_saucer.png"
 
 const scaleToCanvas = ({
   x,
@@ -31,20 +34,40 @@ const draw = (
 
     for (const body of physics.allBodies(world)) {
       const shape = body.shapes[0]
+
+      // render a player
       if (shape.type === physics.ShapeType.CIRCLE) {
-        ctx.save()
-        ctx.translate(shape.center.x, shape.center.y)
-        ctx.rotate(body.angle)
+        const [playerId] =
+          Object.entries(gameState.playerBodies).find(
+            ([, playerBodyId]) => playerBodyId === shape.bodyId
+          ) || []
 
-        ctx.beginPath()
-        ctx.arc(0, 0, shape.bounds, 0, Math.PI * 2)
-        ctx.stroke()
-        ctx.beginPath()
-        ctx.moveTo(0, 0)
-        ctx.lineTo(0, shape.bounds)
-        ctx.stroke()
+        if (playerId !== undefined) {
+          ctx.save()
+          ctx.translate(shape.center.x, shape.center.y)
+          ctx.rotate(body.angle)
 
-        ctx.restore()
+          const avatarImage = document.getElementById(
+            `avatar-img-${playerId}`
+          ) as HTMLImageElement
+          if (avatarImage) {
+            const shipSaucer = document.getElementById(
+              `ship-saucer`
+            ) as HTMLImageElement
+            if (shipSaucer) {
+              ctx.drawImage(shipSaucer, -72.5, 0, 145, 61)
+            }
+            ctx.drawImage(avatarImage, -25, -25, 50, 50)
+            const shipDome = document.getElementById(
+              `ship-dome`
+            ) as HTMLImageElement
+            if (shipDome) {
+              ctx.drawImage(shipDome, -42, -28, 84, 56)
+            }
+          }
+
+          ctx.restore()
+        }
       } else {
         ctx.fillStyle = "rgba(255,255,0,0.7)"
         ctx.save()
@@ -56,30 +79,8 @@ const draw = (
           canvas,
         })
         ctx.strokeRect(-shape.width / 2, -shape.height / 2, width, height)
-
-        // if (shape.sensor && shape.sensorColliding) {
-        //     ctx.fillRect(-shape.width / 2, -shape.height / 2, shape.width, shape.height);
-        // }
         ctx.restore()
       }
-
-      if (!body.static) {
-        const dynamic = body as physics.DynamicRigidBody
-        ctx.fillStyle = "blue"
-        ctx.beginPath()
-        ctx.arc(
-          dynamic.centerOfPhysics.x,
-          dynamic.centerOfPhysics.y,
-          2,
-          0,
-          Math.PI * 2
-        )
-        ctx.fill()
-      }
-      ctx.fillStyle = "red"
-      ctx.beginPath()
-      ctx.arc(body.center.x, body.center.y, 2, 0, Math.PI * 2)
-      ctx.fill()
     }
   }
 }
@@ -97,13 +98,15 @@ const getCanvasDimensions = () => {
 
 function App() {
   const [game, setGame] = useState<GameState>()
+  const [playerId, setPlayerId] = useState<PlayerId>()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { height, width } = getCanvasDimensions()
 
   useEffect(() => {
     Rune.initClient({
-      onChange: ({ game }) => {
+      onChange: ({ game, yourPlayerId }) => {
         setGame(game)
+        setPlayerId(yourPlayerId)
       },
     })
   }, [])
@@ -115,7 +118,7 @@ function App() {
 
     //Our draw come here
     draw(context, canvas, game)
-  }, [game])
+  }, [game, playerId])
 
   const onMove = useCallback(
     (controls: Controls) => Rune.actions.move(controls),
@@ -131,6 +134,18 @@ function App() {
     <>
       <canvas width={width} height={height} ref={canvasRef} />
       <Joystick onMove={onMove} />
+      {game.playerIds.map((playerId) => (
+        <img
+          id={`avatar-img-${playerId}`}
+          key={playerId}
+          src={Rune.getPlayerInfo(playerId).avatarUrl}
+          height={40}
+          width={40}
+        />
+      ))}
+
+      <img id="ship-dome" src={shipDome} height={56} width={86} />
+      <img id="ship-saucer" src={shipSaucer} height={61} width={145} />
     </>
   )
 }

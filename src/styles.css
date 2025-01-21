@@ -17,21 +17,8 @@ main {
   justify-content: space-around;
 }
 #rune-world-root {
-  /* flex: 1; */
-  background-color: red;
-}
-
-#controller {
-  /* position: absolute; */
-  /* left: 0; */
-  /* right: 0; */
-  /* bottom: 0; */
-  /* background-color: aqua; */
-  /* height: 200px; */
-  /* width: 200px; */
-} 
-
-canvas {
-  /* height: 100%; */
-  /* width: 100%; */
+  background-image: url("background_1.jpg");
+  background-size: 350%;
+  background-position: center;
+  
 }

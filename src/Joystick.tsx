@@ -21,7 +21,7 @@ export const Joystick = ({
         zone: controllerDivRef.current,
         position: { left: "80px", bottom: "80px" },
         threshold: 0.2,
-        color: "blue",
+        color: "#FAEF98",
       })
 
       joystick.on("move", (event, joystick) => {

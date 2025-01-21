@@ -23,27 +23,42 @@ declare global {
 }
 
 export const SPACE_WIDTH = 400
-export const SPACE_HEIGHT = 700
-export const SHIP_SIZE = 10
+export const SPACE_HEIGHT = 650
+export const SHIP_SIZE = 50
 const POWER_SCALE = 100
 
-function createEdge(
-  world: physics.World,
-  x: number,
-  y: number,
-  width: number,
+const createBoundary = ({
+  world,
+  center,
+  width,
+  height,
+}: {
+  world: physics.World
+  center: {
+    x: number
+    y: number
+  }
+  width: number
   height: number
-) {
-  const edge = physics.createRectangle(
+}) => {
+  const mass = 0
+  const friction = 0
+  const restitution = 1
+  const boundary = physics.createRectangle(
     world,
-    { x: x + width / 2, y: y + height / 2 },
+    {
+      x: SPACE_WIDTH / 2 + center.x,
+      y: SPACE_HEIGHT / 2 + center.y,
+    },
     width,
     height,
-    0,
-    0.5,
-    0.9
+    mass,
+    friction,
+    restitution
   )
-  physics.addBody(world, edge)
+  physics.addBody(world, boundary)
+
+  return boundary
 }
 
 Rune.initLogic({
@@ -89,15 +104,30 @@ Rune.initLogic({
       // })
     })
 
-    // Top
-    createEdge(world, 0, 0, SPACE_WIDTH, -20)
-    // Bottom
-    createEdge(world, 0, SPACE_HEIGHT - 20, SPACE_WIDTH, 20)
-    // Left
-    createEdge(world, 0, 0, -20, SPACE_HEIGHT)
-    // Right
-    // TODO: why isn't space width the right value here for position
-    createEdge(world, SPACE_WIDTH - 20, 20, 20, SPACE_HEIGHT)
+    createBoundary({
+      world,
+      center: { x: 0, y: SPACE_HEIGHT / 2 },
+      width: SPACE_WIDTH,
+      height: 1,
+    })
+    createBoundary({
+      world,
+      center: { x: 0, y: -SPACE_HEIGHT / 2 },
+      width: SPACE_WIDTH,
+      height: 1,
+    })
+    createBoundary({
+      world,
+      center: { x: -SPACE_WIDTH / 2, y: 0 },
+      width: 1,
+      height: SPACE_HEIGHT,
+    })
+    createBoundary({
+      world,
+      center: { x: SPACE_WIDTH / 2, y: 0 },
+      width: 1,
+      height: SPACE_HEIGHT,
+    })
 
     const gameState: GameState = {
       world,
@@ -106,6 +136,46 @@ Rune.initLogic({
     }
 
     return gameState
+  },
+  events: {
+    playerJoined: (playerId, { game }) => {
+      const world = game.world
+      const playerBody: physics.DynamicRigidBody = physics.createCircle(
+        world,
+        { x: (SPACE_WIDTH / 6) * game.playerIds.length, y: SPACE_HEIGHT / 2 },
+        SHIP_SIZE,
+        1,
+        1,
+        1
+      ) as physics.DynamicRigidBody
+
+      playerBody.data = {
+        col: "orange",
+        num: 0,
+        ox: SPACE_WIDTH / 6,
+        oy: SPACE_HEIGHT / 2,
+      }
+
+      game.playerBodies[playerId] = playerBody.id
+
+      physics.addBody(world, playerBody)
+
+      playerBody.velocity.y = 100
+
+      game.playerIds.push(playerId)
+    },
+    playerLeft: (playerId, { game }) => {
+      const world = game.world
+      const playerBodyId = game.playerBodies[playerId]
+      const playerBody = world.dynamicBodies.find(
+        (body) => body.id === playerBodyId
+      )
+      if (playerBody) {
+        physics.removeBody(world, playerBody)
+      }
+      delete game.playerBodies[playerId]
+      game.playerIds = game.playerIds.filter((id) => id !== playerId)
+    },
   },
   actions: {
     move: (controls: Controls, { game, playerId }) => {
