@@ -40,7 +40,7 @@ export const Joystick = ({
 
       return () => joystick.destroy()
     }
-  }, [controllerDivRef.current])
+  }, [onMove])
 
   return <div id="controller" ref={controllerDivRef} />
 }

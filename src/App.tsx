@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { GameState, SPACE_HEIGHT, SPACE_WIDTH } from "./logic.ts"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Controls, GameState, SPACE_HEIGHT, SPACE_WIDTH } from "./logic.ts"
 import { physics } from "propel-js"
 
 import { Joystick } from "./Joystick.tsx"
@@ -22,7 +22,7 @@ const scaleToCanvas = ({
 const draw = (
   ctx: CanvasRenderingContext2D | null,
   canvas: HTMLCanvasElement,
-  gameState: GameState,
+  gameState: GameState
 ) => {
   if (ctx) {
     const world = gameState.world
@@ -46,10 +46,10 @@ const draw = (
 
         ctx.restore()
       } else {
-        ctx.fillStyle = "rgba(255,255,0,0.7)";
-        ctx.save();
-        ctx.translate(shape.center.x, shape.center.y);
-        ctx.rotate(body.angle + shape.angle);
+        ctx.fillStyle = "rgba(255,255,0,0.7)"
+        ctx.save()
+        ctx.translate(shape.center.x, shape.center.y)
+        ctx.rotate(body.angle + shape.angle)
         const { x: width, y: height } = scaleToCanvas({
           x: shape.width,
           y: shape.height,
@@ -64,9 +64,9 @@ const draw = (
       }
 
       if (!body.static) {
-        const dynamic = body as physics.DynamicRigidBody;
-        ctx.fillStyle = "blue";
-        ctx.beginPath();
+        const dynamic = body as physics.DynamicRigidBody
+        ctx.fillStyle = "blue"
+        ctx.beginPath()
         ctx.arc(
           dynamic.centerOfPhysics.x,
           dynamic.centerOfPhysics.y,
@@ -117,6 +117,11 @@ function App() {
     draw(context, canvas, game)
   }, [game])
 
+  const onMove = useCallback(
+    (controls: Controls) => Rune.actions.move(controls),
+    []
+  )
+
   if (!game) {
     // Rune only shows your game after an onChange() so no need for loading screen
     return
@@ -125,7 +130,7 @@ function App() {
   return (
     <>
       <canvas width={width} height={height} ref={canvasRef} />
-      <Joystick onMove={(controls) => Rune.actions.move(controls)} />
+      <Joystick onMove={onMove} />
     </>
   )
 }
