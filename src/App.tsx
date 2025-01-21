@@ -6,31 +6,66 @@ import { Joystick } from "./Joystick.tsx"
 import { PlayerId } from "rune-sdk"
 import shipDome from "./assets/spaceship_dome.png"
 import shipSaucer from "./assets/ship_saucer.png"
+import background from "./assets/background_1.jpg"
 
-const scaleToCanvas = ({
-  x,
-  y,
-  canvas,
-}: {
-  x: number
-  y: number
-  canvas: HTMLCanvasElement
-}): { x: number; y: number } => {
-  return {
-    x: canvas.width * (x / SPACE_WIDTH),
-    y: canvas.height * (y / SPACE_HEIGHT),
+const renderPlayer = (
+  ctx: CanvasRenderingContext2D,
+  playerId: PlayerId,
+  centerX: number,
+  centerY: number,
+  angle: number
+) => {
+  ctx.translate(centerX, centerY)
+  ctx.rotate(angle)
+
+  const avatarImage = document.getElementById(
+    `avatar-img-${playerId}`
+  ) as HTMLImageElement
+  if (avatarImage) {
+    const shipSaucer = document.getElementById(
+      `ship-saucer`
+    ) as HTMLImageElement
+    if (shipSaucer) {
+      ctx.drawImage(shipSaucer, -72.5, 0, 145, 61)
+    }
+    ctx.drawImage(avatarImage, -25, -25, 50, 50)
+    const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
+    if (shipDome) {
+      ctx.drawImage(shipDome, -42, -28, 84, 56)
+    }
   }
 }
 
 const draw = (
   ctx: CanvasRenderingContext2D | null,
   canvas: HTMLCanvasElement,
-  gameState: GameState
+  gameState: GameState,
+  myPlayerId: PlayerId
 ) => {
   if (ctx) {
     const world = gameState.world
     ctx.reset()
     ctx.resetTransform()
+
+    // ctx.restore()
+    const myPlayerBody = physics
+      .allBodies(world)
+      .find((body) => body.id === gameState.playerBodies[myPlayerId])
+
+    if (!myPlayerBody) {
+      return
+    }
+
+    const playerCenterX = myPlayerBody.center.x
+    const playerCenterY = myPlayerBody.center.y
+    const top = playerCenterY - canvas.height / 2
+    const left = playerCenterX - canvas.width / 2
+
+    ctx.save()
+    const background = document.getElementById("background") as HTMLImageElement
+    ctx.translate(left - SPACE_WIDTH, top - SPACE_HEIGHT)
+    ctx.drawImage(background, 0, 0, SPACE_WIDTH * 2, SPACE_HEIGHT * 2)
+    ctx.restore()
 
     for (const body of physics.allBodies(world)) {
       const shape = body.shapes[0]
@@ -42,50 +77,30 @@ const draw = (
             ([, playerBodyId]) => playerBodyId === shape.bodyId
           ) || []
 
-        if (playerId !== undefined) {
+        if (playerId !== undefined && playerId !== myPlayerId) {
           ctx.save()
-          ctx.translate(shape.center.x, shape.center.y)
-          ctx.rotate(body.angle)
-
-          const avatarImage = document.getElementById(
-            `avatar-img-${playerId}`
-          ) as HTMLImageElement
-          if (avatarImage) {
-            const shipSaucer = document.getElementById(
-              `ship-saucer`
-            ) as HTMLImageElement
-            if (shipSaucer) {
-              ctx.drawImage(shipSaucer, -72.5, 0, 145, 61)
-            }
-            ctx.drawImage(avatarImage, -25, -25, 50, 50)
-            const shipDome = document.getElementById(
-              `ship-dome`
-            ) as HTMLImageElement
-            if (shipDome) {
-              ctx.drawImage(shipDome, -42, -28, 84, 56)
-            }
-          }
-
+          renderPlayer(
+            ctx,
+            playerId,
+            playerCenterX - shape.center.x + canvas.width / 2,
+            playerCenterY - shape.center.y + canvas.height / 2,
+            body.angle
+          )
           ctx.restore()
         }
-      } else {
-        // ctx.strokeStyle = "rgba(255,255,0,0.7)"
-        ctx.save()
-        const { x: centerX, y: centerY } = scaleToCanvas({
-          x: shape.center.x,
-          y: shape.center.y,
-          canvas,
-        })
-        ctx.translate(centerX, centerY)
-        ctx.rotate(body.angle + shape.angle)
-        const { x: width, y: height } = scaleToCanvas({
-          x: shape.width,
-          y: shape.height,
-          canvas,
-        })
-        ctx.strokeRect(-shape.width / 2, -shape.height / 2, width, height)
-        ctx.restore()
       }
+    }
+
+    if (myPlayerBody) {
+      ctx.save()
+      renderPlayer(
+        ctx,
+        myPlayerId,
+        canvas.width / 2,
+        canvas.height / 2,
+        myPlayerBody.angle
+      )
+      ctx.restore()
     }
   }
 }
@@ -122,7 +137,7 @@ function App() {
     const context = canvas.getContext("2d")
 
     //Our draw come here
-    draw(context, canvas, game)
+    draw(context, canvas, game, playerId ?? "")
   }, [game, playerId])
 
   const onMove = useCallback(
@@ -149,8 +164,27 @@ function App() {
         />
       ))}
 
-      <img id="ship-dome" src={shipDome} height={56} width={86} />
-      <img id="ship-saucer" src={shipSaucer} height={61} width={145} />
+      <img
+        id="ship-dome"
+        className="hidden-img"
+        src={shipDome}
+        height={56}
+        width={86}
+      />
+      <img
+        id="ship-saucer"
+        className="hidden-img"
+        src={shipSaucer}
+        height={61}
+        width={145}
+      />
+      <img
+        id="background"
+        className="hidden-img"
+        src={background}
+        height={height}
+        width={width}
+      />
     </>
   )
 }

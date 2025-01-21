@@ -22,8 +22,8 @@ declare global {
   const Rune: RuneClient<GameState, GameActions>
 }
 
-export const SPACE_WIDTH = 400
-export const SPACE_HEIGHT = 650
+export const SPACE_WIDTH = 1000
+export const SPACE_HEIGHT = 1000
 export const SHIP_SIZE = 50
 const POWER_SCALE = 100
 
@@ -87,23 +87,11 @@ Rune.initLogic({
         1
       ) as physics.DynamicRigidBody
 
-      // player.data = {
-      //   col: "orange",
-      //   num: 0,
-      //   ox: SPACE_WIDTH / 6,
-      //   oy: SPACE_HEIGHT / 2,
-      // }
-
       playerBodies[playerId] = player.id
 
       physics.addBody(world, player)
 
       player.velocity.y = 100
-
-      // physics.applyVelocity(player, {
-      //   x: 200,
-      //   y: 200,
-      // })
     })
 
     // top
@@ -155,14 +143,6 @@ Rune.initLogic({
         1,
         1
       ) as physics.DynamicRigidBody
-
-      // playerBody.data = {
-      //   col: "orange",
-      //   num: 0,
-      //   ox: SPACE_WIDTH / 6,
-      //   oy: SPACE_HEIGHT / 2,
-      // }
-
       game.playerBodies[playerId] = playerBody.id
 
       physics.addBody(world, playerBody)
@@ -192,11 +172,9 @@ Rune.initLogic({
       )
       if (playerBody) {
         physics.applyVelocity(playerBody, {
-          x: controls.x * POWER_SCALE,
-          y: controls.y * POWER_SCALE * -1,
+          x: controls.x * POWER_SCALE * -1,
+          y: controls.y * POWER_SCALE,
         })
-
-        // console.log("controls:", controls)
       }
     },
   },
