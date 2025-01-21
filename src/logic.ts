@@ -74,6 +74,8 @@ Rune.initLogic({
   },
   setup: (allPlayerIds) => {
     const world = physics.createWorld({ x: 0, y: 0 }, 20)
+    world.damp = 0.8
+    world.angularDamp = 0.8
     const playerBodies: Record<PlayerId, number> = {}
     allPlayerIds.forEach((playerId, i) => {
       const player: physics.DynamicRigidBody = physics.createCircle(
@@ -85,12 +87,12 @@ Rune.initLogic({
         1
       ) as physics.DynamicRigidBody
 
-      player.data = {
-        col: "orange",
-        num: 0,
-        ox: SPACE_WIDTH / 6,
-        oy: SPACE_HEIGHT / 2,
-      }
+      // player.data = {
+      //   col: "orange",
+      //   num: 0,
+      //   ox: SPACE_WIDTH / 6,
+      //   oy: SPACE_HEIGHT / 2,
+      // }
 
       playerBodies[playerId] = player.id
 
@@ -104,24 +106,29 @@ Rune.initLogic({
       // })
     })
 
+    // top
     createBoundary({
       world,
       center: { x: 0, y: SPACE_HEIGHT / 2 },
       width: SPACE_WIDTH,
       height: 1,
     })
+    // bottom
     createBoundary({
       world,
       center: { x: 0, y: -SPACE_HEIGHT / 2 },
+      // center: { x: 0, y: 0 },
       width: SPACE_WIDTH,
       height: 1,
     })
+    // left
     createBoundary({
       world,
       center: { x: -SPACE_WIDTH / 2, y: 0 },
       width: 1,
       height: SPACE_HEIGHT,
     })
+    // right
     createBoundary({
       world,
       center: { x: SPACE_WIDTH / 2, y: 0 },
@@ -149,12 +156,12 @@ Rune.initLogic({
         1
       ) as physics.DynamicRigidBody
 
-      playerBody.data = {
-        col: "orange",
-        num: 0,
-        ox: SPACE_WIDTH / 6,
-        oy: SPACE_HEIGHT / 2,
-      }
+      // playerBody.data = {
+      //   col: "orange",
+      //   num: 0,
+      //   ox: SPACE_WIDTH / 6,
+      //   oy: SPACE_HEIGHT / 2,
+      // }
 
       game.playerBodies[playerId] = playerBody.id
 

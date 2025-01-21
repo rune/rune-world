@@ -17,8 +17,8 @@ const scaleToCanvas = ({
   canvas: HTMLCanvasElement
 }): { x: number; y: number } => {
   return {
-    x: (x * canvas.width) / SPACE_WIDTH,
-    y: (y * canvas.height) / SPACE_HEIGHT,
+    x: canvas.width * (x / SPACE_WIDTH),
+    y: canvas.height * (y / SPACE_HEIGHT),
   }
 }
 
@@ -69,9 +69,14 @@ const draw = (
           ctx.restore()
         }
       } else {
-        ctx.fillStyle = "rgba(255,255,0,0.7)"
+        // ctx.strokeStyle = "rgba(255,255,0,0.7)"
         ctx.save()
-        ctx.translate(shape.center.x, shape.center.y)
+        const { x: centerX, y: centerY } = scaleToCanvas({
+          x: shape.center.x,
+          y: shape.center.y,
+          canvas,
+        })
+        ctx.translate(centerX, centerY)
         ctx.rotate(body.angle + shape.angle)
         const { x: width, y: height } = scaleToCanvas({
           x: shape.width,
