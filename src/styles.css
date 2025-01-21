@@ -17,8 +17,7 @@ main {
   justify-content: space-around;
 }
 #rune-world-root {
-  background-image: url("background_1.jpg");
+  background-image: url(./background_1.jpg);
   background-size: 350%;
   background-position: center;
-  
 }
