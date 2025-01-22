@@ -1,5 +1,6 @@
 import type { PlayerId, RuneClient } from "rune-sdk"
 import { physics } from "propel-js"
+import { Direction } from "nipplejs"
 
 export type Cells = (PlayerId | null)[]
 
@@ -10,12 +11,13 @@ export interface GameState {
 }
 
 type GameActions = {
-  move: (controls: { x: number; y: number }) => void
+  move: (controls: Controls) => void
 }
 
 export type Controls = {
   x: number
   y: number
+  direction?: Direction
 }
 
 declare global {
@@ -25,7 +27,7 @@ declare global {
 export const SPACE_WIDTH = 1000
 export const SPACE_HEIGHT = 1000
 export const SHIP_SIZE = 50
-const POWER_SCALE = 100
+const POWER_SCALE = 200
 
 const createBoundary = ({
   world,
@@ -171,10 +173,25 @@ Rune.initLogic({
         (b) => b.id === playerBodies[playerId]
       )
       if (playerBody) {
-        physics.applyVelocity(playerBody, {
-          x: controls.x * POWER_SCALE * -1,
-          y: controls.y * POWER_SCALE,
-        })
+        if (["down", "up"].includes(controls.direction?.angle || "")) {
+          playerBody.angularAcceleration = 0
+
+          const accelerationVector = physics.rotateVec2(
+            { x: controls.x * POWER_SCALE, y: controls.y * POWER_SCALE },
+            { x: 0, y: 0 },
+            playerBody.angle
+          )
+
+          if (controls.direction?.angle === "down") {
+            playerBody.acceleration = { x: 0, y: 0 }
+          } else {
+            playerBody.acceleration = accelerationVector
+          }
+        } else if (
+          ["left", "right"].includes(controls.direction?.angle || "")
+        ) {
+          playerBody.angularAcceleration = controls.x * 5
+        }
       }
     },
   },

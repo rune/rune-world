@@ -35,8 +35,10 @@ export const renderJoystick = ({
   joystick.on("move", (event, joystick) => {
     if (!lastMoveTime || lastMoveOldEnough(lastMoveTime)) {
       lastMoveTime = new Date()
-
-      const newControls = joystick.vector
+      const newControls = {
+        ...joystick.vector,
+        direction: joystick.direction,
+      }
 
       // clamp inputs to stop stutter
       newControls.x = Math.floor(newControls.x * 30) / 30
@@ -44,5 +46,14 @@ export const renderJoystick = ({
 
       onMove(newControls)
     }
+  })
+
+  // TODO: do this better
+  joystick.on("end", () => {
+    onMove({
+      x: 0,
+      y: 0,
+      direction: { angle: "down", x: "right", y: "down" },
+    })
   })
 }
