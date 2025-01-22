@@ -47,19 +47,19 @@ const renderPlayer = (
         `ship-thruster`
       ) as HTMLImageElement
       if (shipThrusterElement) {
-        ctx.drawImage(shipThrusterElement, -18, 65, 36, 70)
+        ctx.drawImage(shipThrusterElement, -18, 55, 36, 70)
       }
     }
     const shipSaucer = document.getElementById(
       `ship-saucer`
     ) as HTMLImageElement
     if (shipSaucer) {
-      ctx.drawImage(shipSaucer, -72.5, 0, 145, 61)
+      ctx.drawImage(shipSaucer, -46, 0, 93.6, 49.2)
     }
-    ctx.drawImage(avatarImage, -25, -25, 50, 50)
+    ctx.drawImage(avatarImage, -20, -18, 40, 40)
     const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
     if (shipDome) {
-      ctx.drawImage(shipDome, -42, -28, 84, 56)
+      ctx.drawImage(shipDome, -34.3, -26, 69.6, 52.8)
     }
   }
 }
