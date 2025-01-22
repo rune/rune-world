@@ -1,13 +1,27 @@
-import React from "react"
-import ReactDOM from "react-dom/client"
+import { renderJoystick } from "./joystick.ts"
+import type { Controls } from "./logic.ts"
+import { renderGame } from "./render.ts"
 
-import App from "./App.tsx"
-import "./styles.css"
+const onJoystickMove = (controls: Controls) => Rune.actions.move(controls)
 
-ReactDOM.createRoot(
-  document.getElementById("rune-world-root") as HTMLElement
-).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+const startUI = () => {
+  Rune.initClient({
+    onChange: ({ game, yourPlayerId }) => {
+      const runeWorldRootDiv = document.getElementById("rune-world-root")
+      if (
+        runeWorldRootDiv &&
+        runeWorldRootDiv instanceof HTMLDivElement &&
+        yourPlayerId
+      ) {
+        renderGame({ game, playerId: yourPlayerId, rootDiv: runeWorldRootDiv })
+      }
+    },
+  })
+
+  const joystickDiv = document.getElementById("joystick")
+  if (joystickDiv && joystickDiv instanceof HTMLDivElement) {
+    renderJoystick({ zone: joystickDiv, onMove: onJoystickMove })
+  }
+}
+
+startUI()
