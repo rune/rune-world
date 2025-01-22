@@ -10,10 +10,6 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main>
-      <div id="rune-world-root"></div>
-      <div id="joystick"></div>
-    </main>
     <div id="game-images">
       <img
         id="background"
@@ -26,6 +22,7 @@
         id="ship-dome"
         className="hidden-img"
         src="spaceship_dome.png"
+        class="hidden-img"
         height="56"
         width="86"
       />
@@ -33,10 +30,14 @@
         id="ship-saucer"
         className="hidden-img"
         src="ship_saucer.png"
+        class="hidden-img"
         height="61"
         width="145"
       />
     </div>
+    <main>
+      <div id="rune-world-root"></div>
+    </main>
     <script type="module" src="/src/logic.ts"></script>
     <script type="module" src="/src/client.tsx"></script>
   </body>
