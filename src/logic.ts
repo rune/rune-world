@@ -26,7 +26,7 @@ declare global {
 
 export const SPACE_WIDTH = 1000
 export const SPACE_HEIGHT = 1000
-export const SHIP_SIZE = 50
+export const SHIP_SIZE = 36
 const POWER_SCALE = 200
 
 const createBoundary = ({
