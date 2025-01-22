@@ -64,7 +64,7 @@ const renderPlayer = (
   }
 }
 
-const draw = (
+const draw = async (
   ctx: CanvasRenderingContext2D | null,
   canvas: HTMLCanvasElement,
   gameState: GameState,
@@ -90,6 +90,11 @@ const draw = (
 
     const background = document.getElementById("background")
     if (background && background instanceof HTMLImageElement) {
+      if (!background.complete) {
+        await new Promise((resolve) => {
+          background.onload = resolve
+        })
+      }
       ctx.save()
       ctx.translate(left - SPACE_WIDTH, top - SPACE_HEIGHT)
       ctx.drawImage(background, 0, 0, SPACE_WIDTH * 2.2, SPACE_HEIGHT * 2.2)
