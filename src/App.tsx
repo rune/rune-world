@@ -7,13 +7,15 @@ import { PlayerId } from "rune-sdk"
 import shipDome from "./assets/spaceship_dome.png"
 import shipSaucer from "./assets/ship_saucer.png"
 import background from "./assets/background_1.jpg"
+import shipThruster from "./assets/ship_thruster.png"
 
 const renderPlayer = (
   ctx: CanvasRenderingContext2D,
   playerId: PlayerId,
   centerX: number,
   centerY: number,
-  angle: number
+  angle: number,
+  accelerating: boolean
 ) => {
   ctx.translate(centerX, centerY)
   ctx.rotate(angle)
@@ -22,6 +24,14 @@ const renderPlayer = (
     `avatar-img-${playerId}`
   ) as HTMLImageElement
   if (avatarImage) {
+    if (accelerating) {
+      const shipThrusterElement = document.getElementById(
+        `ship-thruster`
+      ) as HTMLImageElement
+      if (shipThrusterElement) {
+        ctx.drawImage(shipThrusterElement, -18, 65, 36, 70)
+      }
+    }
     const shipSaucer = document.getElementById(
       `ship-saucer`
     ) as HTMLImageElement
@@ -72,6 +82,9 @@ const draw = (
 
       // render a player
       if (shape.type === physics.ShapeType.CIRCLE) {
+        const accelerating =
+          !body.static &&
+          (body.acceleration.x !== 0 || body.acceleration.y !== 0)
         const [playerId] =
           Object.entries(gameState.playerBodies).find(
             ([, playerBodyId]) => playerBodyId === shape.bodyId
@@ -84,7 +97,8 @@ const draw = (
             playerId,
             playerCenterX - shape.center.x + canvas.width / 2,
             playerCenterY - shape.center.y + canvas.height / 2,
-            body.angle
+            body.angle,
+            accelerating,
           )
           ctx.restore()
         }
@@ -93,12 +107,16 @@ const draw = (
 
     if (myPlayerBody) {
       ctx.save()
+      const accelerating =
+        !myPlayerBody.static &&
+        (myPlayerBody.acceleration.x !== 0 || myPlayerBody.acceleration.y !== 0)
       renderPlayer(
         ctx,
         myPlayerId,
         canvas.width / 2,
         canvas.height / 2,
-        myPlayerBody.angle
+        myPlayerBody.angle,
+        accelerating
       )
       ctx.restore()
     }
@@ -177,6 +195,13 @@ function App() {
         src={shipSaucer}
         height={61}
         width={145}
+      />
+      <img
+        id="ship-thruster"
+        className="hidden-img"
+        src={shipThruster}
+        height={70}
+        width={36}
       />
       <img
         id="background"
