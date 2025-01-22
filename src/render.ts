@@ -92,7 +92,7 @@ const draw = (
     if (background && background instanceof HTMLImageElement) {
       ctx.save()
       ctx.translate(left - SPACE_WIDTH, top - SPACE_HEIGHT)
-      ctx.drawImage(background, 0, 0, SPACE_WIDTH * 2, SPACE_HEIGHT * 2)
+      ctx.drawImage(background, 0, 0, SPACE_WIDTH * 2.2, SPACE_HEIGHT * 2.2)
       ctx.restore()
     }
 
