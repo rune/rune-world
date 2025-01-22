@@ -190,8 +190,7 @@ Rune.initLogic({
         } else if (
           ["left", "right"].includes(controls.direction?.angle || "")
         ) {
-          playerBody.angularAcceleration =
-            playerBody.angularAcceleration + controls.x
+          playerBody.angularAcceleration = controls.x * 5
         }
       }
     },
