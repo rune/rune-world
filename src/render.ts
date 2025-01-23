@@ -59,7 +59,7 @@ const renderPlayer = (
     if (shipSaucer) {
       ctx.drawImage(shipSaucer, 0, 0, 312, 164, -46, 0, 93.6, 49.2)
     }
-    ctx.drawImage(avatarImage, 0, 0, 300, 300, -20, -19, 40, 40)
+    ctx.drawImage(avatarImage, 0, 0, 300, 300, -20, -19, 42.8, 42.8)
     const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
     if (shipDome) {
       ctx.drawImage(shipDome, 0, 0, 232, 176, -34.3, -26, 69.6, 52.8)
