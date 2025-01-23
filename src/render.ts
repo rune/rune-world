@@ -50,7 +50,7 @@ const renderPlayer = (
         `ship-thruster`
       ) as HTMLImageElement
       if (shipThrusterElement) {
-        ctx.drawImage(shipThrusterElement, 0, 0, 360, 700, -18, 55, 36, 70)
+        ctx.drawImage(shipThrusterElement, 0, 0, 360, 700, -9, 52, 18, 30)
       }
     }
     const shipSaucer = document.getElementById(
