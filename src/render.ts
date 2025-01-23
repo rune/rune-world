@@ -50,14 +50,20 @@ const renderPlayer = (
         `ship-thruster`
       ) as HTMLImageElement
       if (shipThrusterElement) {
-        ctx.drawImage(shipThrusterElement, 0, 0, 360, 700, -18, 30, 36, 70)
+        ctx.drawImage(shipThrusterElement, 0, 0, 360, 700, -18, 55, 36, 70)
       }
     }
-    const ship = document.getElementById(`ship`) as HTMLImageElement
-    if (ship) {
-      ctx.drawImage(ship, -34, -50, 70, 108)
+    const shipSaucer = document.getElementById(
+      `ship-saucer`
+    ) as HTMLImageElement
+    if (shipSaucer) {
+      ctx.drawImage(shipSaucer, 0, 0, 312, 164, -46, 0, 93.6, 49.2)
     }
     ctx.drawImage(avatarImage, 0, 0, 300, 300, -20, -19, 42.8, 42.8)
+    const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
+    if (shipDome) {
+      ctx.drawImage(shipDome, 0, 0, 232, 176, -34.3, -26, 69.6, 52.8)
+    }
   }
 }
 
