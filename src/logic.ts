@@ -77,6 +77,18 @@ Rune.initLogic({
     // prevents the ship from spinning forever
     game.world.dynamicBodies.forEach((body) => {
       body.angularVelocity = body.angularVelocity * 0.98
+
+      // As the body rotates if there is acceleration on the body we have to rotate the acceleration
+      // to account for the new angle of the ship
+      if (body.acceleration.x || body.acceleration.y) {
+        const accelerationVector = physics.rotateVec2(
+          { x: 0, y: POWER_SCALE },
+          { x: 0, y: 0 },
+          body.angle + Math.PI
+        )
+
+        body.acceleration = accelerationVector
+      }
     })
   },
   setup: (allPlayerIds) => {
@@ -178,11 +190,7 @@ Rune.initLogic({
         (b) => b.id === playerBodies[playerId]
       )
       if (playerBody) {
-        if (["left", "right"].includes(controls.direction?.angle || "")) {
-          playerBody.angularAcceleration = controls.x * 5
-        } else {
-          playerBody.angularAcceleration = 0
-        }
+        playerBody.angularAcceleration = controls.x * 5
       }
     },
     accelerate: (acceleration: number, { playerId, game }) => {
