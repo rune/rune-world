@@ -26,6 +26,7 @@ const renderPlayer = (
   if (!playerAvatarImages[playerId]) {
     const imageDiv = document.getElementById("game-images")
     if (imageDiv && imageDiv instanceof HTMLDivElement) {
+      console.log("image", Rune.getPlayerInfo(playerId).avatarUrl)
       const img = document.createElement("img")
       img.id = `avatar-img-${playerId}`
       img.src = Rune.getPlayerInfo(playerId).avatarUrl
@@ -47,19 +48,19 @@ const renderPlayer = (
         `ship-thruster`
       ) as HTMLImageElement
       if (shipThrusterElement) {
-        ctx.drawImage(shipThrusterElement, -18, 55, 36, 70)
+        ctx.drawImage(shipThrusterElement, 0, 0, 360, 700, -18, 55, 36, 70)
       }
     }
     const shipSaucer = document.getElementById(
       `ship-saucer`
     ) as HTMLImageElement
     if (shipSaucer) {
-      ctx.drawImage(shipSaucer, -46, 0, 93.6, 49.2)
+      ctx.drawImage(shipSaucer, 0, 0, 312, 164, -46, 0, 93.6, 49.2)
     }
-    ctx.drawImage(avatarImage, -20, -18, 40, 40)
+    ctx.drawImage(avatarImage, 0, 0, 300, 300, -20, -19, 40, 40)
     const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
     if (shipDome) {
-      ctx.drawImage(shipDome, -34.3, -26, 69.6, 52.8)
+      ctx.drawImage(shipDome, 0, 0, 232, 176, -34.3, -26, 69.6, 52.8)
     }
   }
 }
@@ -97,7 +98,17 @@ const draw = async (
       }
       ctx.save()
       ctx.translate(left - SPACE_WIDTH, top - SPACE_HEIGHT)
-      ctx.drawImage(background, 0, 0, SPACE_WIDTH * 2.2, SPACE_HEIGHT * 2.2)
+      ctx.drawImage(
+        background,
+        0,
+        0,
+        2048,
+        2048,
+        0,
+        0,
+        SPACE_WIDTH * 2.2,
+        SPACE_HEIGHT * 2.2
+      )
       ctx.restore()
     }
 
