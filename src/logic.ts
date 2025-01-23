@@ -73,6 +73,10 @@ Rune.initLogic({
     // twice since the game logic is configured to run at 30fps
     physics.worldStep(60, game.world)
     physics.worldStep(60, game.world)
+    // prevents the ship from spinning forever
+    game.world.dynamicBodies.forEach((body) => {
+      body.angularVelocity = body.angularVelocity * 0.98
+    })
   },
   setup: (allPlayerIds) => {
     const world = physics.createWorld({ x: 0, y: 0 }, 20)
