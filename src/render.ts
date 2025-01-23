@@ -30,8 +30,8 @@ const renderPlayer = (
       const img = document.createElement("img")
       img.id = `avatar-img-${playerId}`
       img.src = Rune.getPlayerInfo(playerId).avatarUrl
-      img.height = 40
-      img.width = 40
+      img.height = 300
+      img.width = 300
       img.className = "hidden-img"
       imageDiv.appendChild(img)
       playerAvatarImages[playerId] = img
@@ -40,6 +40,8 @@ const renderPlayer = (
 
   ctx.translate(centerX, centerY)
   ctx.rotate(angle)
+  // ctx.imageSmoothingEnabled = false
+  // ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
 
   const avatarImage = playerAvatarImages[playerId]
   if (avatarImage) {

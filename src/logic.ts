@@ -81,7 +81,7 @@ Rune.initLogic({
   setup: (allPlayerIds) => {
     const world = physics.createWorld({ x: 0, y: 0 }, 20)
     world.damp = 0.8
-    world.angularDamp = 0.8
+
     const playerBodies: Record<PlayerId, number> = {}
     allPlayerIds.forEach((playerId, i) => {
       const player: physics.DynamicRigidBody = physics.createCircle(
