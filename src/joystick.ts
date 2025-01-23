@@ -21,8 +21,9 @@ export const renderJoystick = ({
   if (controller) {
     controller.remove()
   }
-
+  const joystickRoot = document.getElementById("joystick-root")
   joystick = nipplejs.create({
+    zone: joystickRoot || undefined,
     mode: "static",
     position: { left: "80px", bottom: "80px" },
     threshold: 0.2,

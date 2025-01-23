@@ -12,6 +12,7 @@ export interface GameState {
 
 type GameActions = {
   move: (controls: Controls) => void
+  accelerate: (acceleration: number) => void
 }
 
 export type Controls = {
@@ -27,7 +28,7 @@ declare global {
 export const SPACE_WIDTH = 1600
 export const SPACE_HEIGHT = 1600
 export const SHIP_SIZE = 36
-const POWER_SCALE = 200
+export const POWER_SCALE = 200
 
 const createBoundary = ({
   world,
@@ -177,25 +178,29 @@ Rune.initLogic({
         (b) => b.id === playerBodies[playerId]
       )
       if (playerBody) {
-        if (["down", "up"].includes(controls.direction?.angle || "")) {
-          playerBody.angularAcceleration = 0
-
-          const accelerationVector = physics.rotateVec2(
-            { x: controls.x * POWER_SCALE, y: controls.y * POWER_SCALE },
-            { x: 0, y: 0 },
-            playerBody.angle
-          )
-
-          if (controls.direction?.angle === "down") {
-            playerBody.acceleration = { x: 0, y: 0 }
-          } else {
-            playerBody.acceleration = accelerationVector
-          }
-        } else if (
-          ["left", "right"].includes(controls.direction?.angle || "")
-        ) {
+        if (["left", "right"].includes(controls.direction?.angle || "")) {
           playerBody.angularAcceleration = controls.x * 5
+        } else {
+          playerBody.angularAcceleration = 0
         }
+      }
+    },
+    accelerate: (acceleration: number, { playerId, game }) => {
+      const playerBodies = game.playerBodies
+      const playerBody = game.world.dynamicBodies.find(
+        (b) => b.id === playerBodies[playerId]
+      )
+
+      if (playerBody) {
+        playerBody.angularAcceleration = 0
+
+        const accelerationVector = physics.rotateVec2(
+          { x: 0, y: acceleration * POWER_SCALE },
+          { x: 0, y: 0 },
+          playerBody.angle
+        )
+
+        playerBody.acceleration = accelerationVector
       }
     },
   },

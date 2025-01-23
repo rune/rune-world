@@ -16,6 +16,17 @@ main {
   justify-content: space-around;
 }
 
+#thruster-button {
+  height: 80px;
+  width: 80px;
+  background-color: #FAEF98;
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  border-radius: 50%;
+  opacity: .3
+}
+
 .hidden-img {
   display: none;
 }
