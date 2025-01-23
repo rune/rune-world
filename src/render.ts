@@ -99,7 +99,7 @@ const draw = async (
         })
       }
       ctx.save()
-      ctx.translate(left - SPACE_WIDTH, top - SPACE_HEIGHT)
+      ctx.translate(Math.max(left, 0) - SPACE_WIDTH, top - SPACE_HEIGHT)
       ctx.drawImage(
         background,
         0,
@@ -151,10 +151,10 @@ const draw = async (
         ctx,
         myPlayerId,
         // TODO: try to get the player to move all the way to the edge of the screen
-        // myPlayerBody.center.x < canvas.width / 2
-        //   ? canvas.width - myPlayerBody.center.x
-        //   : canvas.width / 2,
-        canvas.width / 2,
+        myPlayerBody.center.x < canvas.width / 2
+          ? canvas.width - myPlayerBody.center.x
+          : canvas.width / 2,
+        // canvas.width / 2,
         canvas.height / 2,
         myPlayerBody.angle,
         accelerating
