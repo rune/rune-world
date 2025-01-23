@@ -12,4 +12,8 @@ export const renderThrusterButton = ({
   button?.addEventListener(isTouch ? "touchend" : "mouseup", () => {
     onAccelerateHandler(0)
   })
+
+  button?.addEventListener("mouseout", () => {
+    onAccelerateHandler(0)
+  })
 }
