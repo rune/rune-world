@@ -25,7 +25,7 @@ export const renderJoystick = ({
   joystick = nipplejs.create({
     zone: joystickRoot || undefined,
     mode: "static",
-    position: { left: "80px", bottom: "80px" },
+    position: { left: "50%", top: "50%" },
     threshold: 0.2,
     color: "#FAEF98",
     dynamicPage: true,

@@ -16,11 +16,6 @@ main {
   justify-content: space-around;
 }
 
-canvas {
-  pointer-events: none;
-  touch-action: none;
-}
-
 #thruster-button {
   height: 80px;
   width: 80px;
@@ -30,6 +25,14 @@ canvas {
   right: 40px;
   border-radius: 50%;
   opacity: 0.3;
+}
+
+#joystick-root {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  min-width: 100px;
+  min-height: 100px;
 }
 
 .hidden-img {
