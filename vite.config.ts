@@ -13,7 +13,7 @@ export default defineConfig({
     rune({
       logicPath: path.resolve("./src/logic.ts"),
       minifyLogic: false, // This flag can be used if your logic reaches the allowed limit. However, it will make it significantly more difficult to detect validation issues
-      ignoredDependencies: [],
+      ignoredDependencies: ["propel-js", "nipplejs"], // This is a list of dependencies that are not allowed in the logic file
     }),
   ],
 })

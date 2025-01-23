@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -6,11 +6,49 @@
       name="viewport"
       content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
     />
-    <title>Vite + React + TS</title>
+    <title>Rune World</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preload" href="background_1.jpg" as="image" />
+    <link rel="preload" href="ship_dome.png" as="image" />
+    <link rel="preload" href="ship_saucer.png" as="image" />
+    <link rel="preload" href="ship_thruster.png" as="image" />
   </head>
   <body>
+    <div id="game-images">
+      <img
+        id="background"
+        src="background_1.jpg"
+        class="hidden-img"
+        height="100%"
+        width="100%"
+      />
+      <img
+        id="ship-dome"
+        class="hidden-img"
+        src="ship_dome.png"
+        height="44"
+        width="58"
+      />
+      <img
+        id="ship-saucer"
+        class="hidden-img"
+        src="ship_saucer.png"
+        height="41"
+        width="78"
+      />
+      <img
+        id="ship-thruster"
+        class="hidden-img"
+        src="ship_thruster.png"
+        height="70"
+        width="36"
+      />
+    </div>
     <main>
-      <div id="root"></div>
+      <canvas id="game-canvas"></canvas>
+      <div id="rune-world-root"></div>
+      <div id="joystick-root"></div>
+      <div id="thruster-button"></div>
     </main>
     <script type="module" src="/src/logic.ts"></script>
     <script type="module" src="/src/client.tsx"></script>
