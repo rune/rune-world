@@ -108,8 +108,8 @@ const draw = async (
         2048,
         0,
         0,
-        SPACE_WIDTH * 2.2,
-        SPACE_HEIGHT * 2.2
+        SPACE_WIDTH * 2,
+        SPACE_HEIGHT * 2
       )
       ctx.restore()
     }
