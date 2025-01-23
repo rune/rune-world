@@ -88,8 +88,14 @@ const draw = async (
 
     const playerCenterX = myPlayerBody.center.x
     const playerCenterY = myPlayerBody.center.y
-    const top = playerCenterY - canvas.height / 2
-    const left = playerCenterX - canvas.width / 2
+    const cameraOffsetX =
+      playerCenterX > SPACE_WIDTH - canvas.width / 2
+        ? canvas.width - (SPACE_WIDTH - playerCenterX)
+        : Math.min(playerCenterX, canvas.width / 2)
+    const cameraOffsetY =
+      playerCenterY > SPACE_HEIGHT - canvas.height / 2
+        ? canvas.height - (SPACE_HEIGHT - playerCenterY)
+        : Math.min(playerCenterY, canvas.height / 2)
 
     const background = document.getElementById("background")
     if (background && background instanceof HTMLImageElement) {
@@ -99,7 +105,16 @@ const draw = async (
         })
       }
       ctx.save()
-      ctx.translate(Math.max(left, 0) - SPACE_WIDTH, top - SPACE_HEIGHT)
+      ctx.translate(
+        -Math.min(
+          Math.max(playerCenterX, canvas.width / 2),
+          SPACE_WIDTH - canvas.width / 2
+        ),
+        -Math.min(
+          Math.max(playerCenterY, canvas.height / 2),
+          SPACE_HEIGHT - canvas.height / 2
+        )
+      )
       ctx.drawImage(
         background,
         0,
@@ -108,8 +123,8 @@ const draw = async (
         2048,
         0,
         0,
-        SPACE_WIDTH * 2,
-        SPACE_HEIGHT * 2
+        SPACE_WIDTH * 1.5,
+        SPACE_HEIGHT * 1.5
       )
       ctx.restore()
     }
@@ -132,8 +147,8 @@ const draw = async (
           renderPlayer(
             ctx,
             playerId,
-            playerCenterX - shape.center.x + canvas.width / 2,
-            playerCenterY - shape.center.y + canvas.height / 2,
+            shape.center.x - playerCenterX + cameraOffsetX,
+            shape.center.y - playerCenterY + cameraOffsetY,
             body.angle,
             accelerating
           )
@@ -150,12 +165,8 @@ const draw = async (
       renderPlayer(
         ctx,
         myPlayerId,
-        // TODO: try to get the player to move all the way to the edge of the screen
-        myPlayerBody.center.x < canvas.width / 2
-          ? canvas.width - myPlayerBody.center.x
-          : canvas.width / 2,
-        // canvas.width / 2,
-        canvas.height / 2,
+        cameraOffsetX,
+        cameraOffsetY,
         myPlayerBody.angle,
         accelerating
       )

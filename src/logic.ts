@@ -197,7 +197,7 @@ Rune.initLogic({
         const accelerationVector = physics.rotateVec2(
           { x: 0, y: acceleration * POWER_SCALE },
           { x: 0, y: 0 },
-          playerBody.angle
+          playerBody.angle + Math.PI
         )
 
         playerBody.acceleration = accelerationVector
