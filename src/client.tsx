@@ -16,13 +16,8 @@ let firstRender = true
 const startUI = () => {
   Rune.initClient({
     onChange: ({ game, yourPlayerId }) => {
-      const runeWorldRootDiv = document.getElementById("rune-world-root")
-      if (
-        runeWorldRootDiv &&
-        runeWorldRootDiv instanceof HTMLDivElement &&
-        yourPlayerId
-      ) {
-        renderGame({ game, playerId: yourPlayerId, rootDiv: runeWorldRootDiv })
+      if (yourPlayerId) {
+        renderGame({ game, playerId: yourPlayerId })
 
         if (firstRender) {
           renderJoystick({ onMove: onJoystickMove })

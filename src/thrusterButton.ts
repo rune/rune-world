@@ -1,14 +1,15 @@
+const isTouch = !!("ontouchstart" in window)
 export const renderThrusterButton = ({
   onAccelerate: onAccelerateHandler,
 }: {
-  onAccelerate: (accleration: number) => void
+  onAccelerate: (acceleration: number) => void
 }) => {
   const button = document.getElementById("thruster-button")
-  button?.addEventListener("mousedown", () => {
+  button?.addEventListener(isTouch ? "touchstart" : "mousedown", () => {
     onAccelerateHandler(1)
   })
 
-  button?.addEventListener("mouseup", () => {
+  button?.addEventListener(isTouch ? "touchend" : "mouseup", () => {
     onAccelerateHandler(0)
   })
 }

@@ -180,20 +180,19 @@ let canvas: HTMLCanvasElement
 export const renderGame = ({
   game,
   playerId,
-  rootDiv,
 }: {
-  rootDiv: HTMLDivElement
   game: GameState
   playerId: PlayerId
 }) => {
   if (!canvas) {
     const { height, width } = getCanvasDimensions()
 
-    canvas = document.createElement("canvas")
-    canvas.width = width
-    canvas.height = height
-
-    rootDiv.appendChild(canvas)
+    const canvasEl = document.getElementById("game-canvas")
+    if (canvasEl instanceof HTMLCanvasElement) {
+      canvas = canvasEl
+      canvas.width = width
+      canvas.height = height
+    }
   }
 
   const ctx = canvas.getContext("2d")
