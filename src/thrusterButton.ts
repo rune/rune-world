@@ -11,4 +11,8 @@ export const renderThrusterButton = ({
   button?.addEventListener("mouseup", () => {
     onAccelerateHandler(0)
   })
+
+  button?.addEventListener("mouseout", () => {
+    onAccelerateHandler(0)
+  })
 }
