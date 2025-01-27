@@ -2,27 +2,25 @@ import { PlayerId } from "rune-sdk"
 import { GameState, SPACE_HEIGHT, SPACE_WIDTH } from "./logic.ts"
 import { physics } from "propel-js"
 
-const getCanvasDimensions = () => {
-  // whats the right way to do this?
-  const width = window.innerWidth
-  const height = window.innerHeight
-
-  return {
-    width,
-    height,
-  }
-}
-
 const playerAvatarImages: Record<PlayerId, HTMLImageElement> = {}
 
-const renderPlayer = (
-  ctx: CanvasRenderingContext2D,
-  playerId: PlayerId,
-  centerX: number,
-  centerY: number,
-  angle: number,
+const renderPlayer = ({
+  ctx,
+  playerId,
+  centerX,
+  centerY,
+  angle,
+  accelerating,
+  devicePixelRatio,
+}: {
+  ctx: CanvasRenderingContext2D
+  playerId: PlayerId
+  centerX: number
+  centerY: number
+  angle: number
   accelerating: boolean
-) => {
+  devicePixelRatio: number
+}) => {
   if (!playerAvatarImages[playerId]) {
     const imageDiv = document.getElementById("game-images")
     if (imageDiv && imageDiv instanceof HTMLDivElement) {
@@ -50,19 +48,43 @@ const renderPlayer = (
         `ship-thruster`
       ) as HTMLImageElement
       if (shipThrusterElement) {
-        ctx.drawImage(shipThrusterElement, 0, 0, 360, 700, -9, 52, 18, 30)
+        ctx.drawImage(
+          shipThrusterElement,
+          -9 * devicePixelRatio,
+          52 * devicePixelRatio,
+          18 * devicePixelRatio,
+          30 * devicePixelRatio
+        )
       }
     }
     const shipSaucer = document.getElementById(
       `ship-saucer`
     ) as HTMLImageElement
     if (shipSaucer) {
-      ctx.drawImage(shipSaucer, 0, 0, 312, 164, -46, 0, 93.6, 49.2)
+      ctx.drawImage(
+        shipSaucer,
+        -46 * devicePixelRatio,
+        0,
+        93.6 * devicePixelRatio,
+        49.2 * devicePixelRatio
+      )
     }
-    ctx.drawImage(avatarImage, 0, 0, 300, 300, -20, -19, 42.8, 42.8)
+    ctx.drawImage(
+      avatarImage,
+      -20 * devicePixelRatio,
+      -19 * devicePixelRatio,
+      42.8 * devicePixelRatio,
+      42.8 * devicePixelRatio
+    )
     const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
     if (shipDome) {
-      ctx.drawImage(shipDome, 0, 0, 232, 176, -34.3, -26, 69.6, 52.8)
+      ctx.drawImage(
+        shipDome,
+        -34.3 * devicePixelRatio,
+        -26 * devicePixelRatio,
+        69.6 * devicePixelRatio,
+        52.8 * devicePixelRatio
+      )
     }
   }
 }
@@ -71,7 +93,8 @@ const draw = async (
   ctx: CanvasRenderingContext2D | null,
   canvas: HTMLCanvasElement,
   gameState: GameState,
-  myPlayerId: PlayerId
+  myPlayerId: PlayerId,
+  devicePixelRatio: number
 ) => {
   if (ctx) {
     const world = gameState.world
@@ -104,6 +127,7 @@ const draw = async (
           background.onload = resolve
         })
       }
+
       ctx.save()
       ctx.translate(
         -Math.min(
@@ -119,12 +143,8 @@ const draw = async (
         background,
         0,
         0,
-        2048,
-        2048,
-        0,
-        0,
-        SPACE_WIDTH * 1.5,
-        SPACE_HEIGHT * 1.5
+        2048 * devicePixelRatio,
+        2048 * devicePixelRatio
       )
       ctx.restore()
     }
@@ -144,14 +164,15 @@ const draw = async (
 
         if (playerId !== undefined && playerId !== myPlayerId) {
           ctx.save()
-          renderPlayer(
+          renderPlayer({
             ctx,
             playerId,
-            shape.center.x - playerCenterX + cameraOffsetX,
-            shape.center.y - playerCenterY + cameraOffsetY,
-            body.angle,
-            accelerating
-          )
+            centerX: shape.center.x - playerCenterX + cameraOffsetX,
+            centerY: shape.center.y - playerCenterY + cameraOffsetY,
+            angle: body.angle,
+            accelerating,
+            devicePixelRatio,
+          })
           ctx.restore()
         }
       }
@@ -162,14 +183,15 @@ const draw = async (
       const accelerating =
         !myPlayerBody.static &&
         (myPlayerBody.acceleration.x !== 0 || myPlayerBody.acceleration.y !== 0)
-      renderPlayer(
+      renderPlayer({
         ctx,
-        myPlayerId,
-        cameraOffsetX,
-        cameraOffsetY,
-        myPlayerBody.angle,
-        accelerating
-      )
+        playerId: myPlayerId,
+        centerX: cameraOffsetX,
+        centerY: cameraOffsetY,
+        angle: myPlayerBody.angle,
+        accelerating,
+        devicePixelRatio,
+      })
       ctx.restore()
     }
   }
@@ -185,17 +207,25 @@ export const renderGame = ({
   playerId: PlayerId
 }) => {
   if (!canvas) {
-    const { height, width } = getCanvasDimensions()
+    const { innerHeight: height, innerWidth: width, devicePixelRatio } = window
+
+    console.log("canvas", {
+      height,
+      width,
+      devicePixelRatio,
+    })
 
     const canvasEl = document.getElementById("game-canvas")
     if (canvasEl instanceof HTMLCanvasElement) {
       canvas = canvasEl
-      canvas.width = width
-      canvas.height = height
+      canvas.width = width * devicePixelRatio
+      canvas.height = height * devicePixelRatio
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
     }
   }
 
   const ctx = canvas.getContext("2d")
 
-  draw(ctx, canvas, game, playerId)
+  draw(ctx, canvas, game, playerId, devicePixelRatio)
 }

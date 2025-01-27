@@ -22,13 +22,6 @@ const startUI = () => {
         if (firstRender) {
           renderJoystick({ onMove: onJoystickMove })
           renderThrusterButton({ onAccelerate })
-          // added this to clear out invalid initial states that
-          // can happen on load
-          setTimeout(() => {
-            renderJoystick({
-              onMove: onJoystickMove,
-            })
-          }, 1000)
           firstRender = false
         }
       }

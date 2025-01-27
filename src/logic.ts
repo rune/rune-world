@@ -25,9 +25,9 @@ declare global {
   const Rune: RuneClient<GameState, GameActions>
 }
 
-export const SPACE_WIDTH = 1600
-export const SPACE_HEIGHT = 1600
-export const SHIP_SIZE = 36
+export const SPACE_WIDTH = 3000
+export const SPACE_HEIGHT = 3000
+export const SHIP_SIZE = 72
 export const POWER_SCALE = 200
 
 const createBoundary = ({
@@ -99,7 +99,7 @@ Rune.initLogic({
     allPlayerIds.forEach((playerId, i) => {
       const player: physics.DynamicRigidBody = physics.createCircle(
         world,
-        { x: SPACE_WIDTH / 2 + (i + 1) * 120, y: SPACE_HEIGHT / 2 },
+        { x: SPACE_WIDTH / 2 + (i + 1) * 240, y: SPACE_HEIGHT / 2 },
         SHIP_SIZE,
         1,
         1,
