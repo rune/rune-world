@@ -29,6 +29,7 @@ export const renderJoystick = ({
     threshold: 0.2,
     color: "#FAEF98",
     dynamicPage: true,
+    restOpacity: 1,
   })
 
   controller = joystick.get(joystick.ids[0])
