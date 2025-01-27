@@ -19,12 +19,14 @@ main {
 #thruster-button {
   height: 80px;
   width: 80px;
-  background-color: #faef98;
   position: absolute;
   bottom: 40px;
   right: 40px;
   border-radius: 50%;
-  opacity: 0.3;
+}
+
+#thruster-button:active {
+  opacity: 0.8;
 }
 
 #joystick-root {
@@ -37,4 +39,13 @@ main {
 
 .hidden-img {
   display: none;
+}
+
+.front {
+  background: center / 200% no-repeat url(joystick.png) !important;
+  opacity: 1 !important;
+}
+
+.back {
+  opacity: 0.1 !important;
 }
