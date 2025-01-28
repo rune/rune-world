@@ -2,7 +2,14 @@ import { PlayerId } from "rune-sdk"
 import { GameState, SPACE_HEIGHT, SPACE_WIDTH } from "./logic.ts"
 import { physics } from "propel-js"
 
-const playerAvatarImages: Record<PlayerId, HTMLImageElement> = {}
+const playerAvatarImageIds: Record<PlayerId, string> = {}
+
+export const staticImageIds = {
+  background: "background",
+  thruster: "ship-thruster",
+  saucer: "ship-saucer",
+  dome: "ship-dome",
+}
 
 const renderPlayer = ({
   ctx,
@@ -21,7 +28,7 @@ const renderPlayer = ({
   accelerating: boolean
   devicePixelRatio: number
 }) => {
-  if (!playerAvatarImages[playerId]) {
+  if (!playerAvatarImageIds[playerId]) {
     const imageDiv = document.getElementById("game-images")
     if (imageDiv && imageDiv instanceof HTMLDivElement) {
       console.log("image", Rune.getPlayerInfo(playerId).avatarUrl)
@@ -32,22 +39,23 @@ const renderPlayer = ({
       img.width = 300
       img.className = "hidden-img"
       imageDiv.appendChild(img)
-      playerAvatarImages[playerId] = img
+      playerAvatarImageIds[playerId] = img.id
     }
   }
 
   ctx.translate(centerX, centerY)
   ctx.rotate(angle)
-  // ctx.imageSmoothingEnabled = false
-  // ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
 
-  const avatarImage = playerAvatarImages[playerId]
-  if (avatarImage) {
+  const avatarImage = document.getElementById(playerAvatarImageIds[playerId])
+  if (avatarImage && avatarImage instanceof HTMLImageElement) {
     if (accelerating) {
       const shipThrusterElement = document.getElementById(
-        `ship-thruster`
-      ) as HTMLImageElement
-      if (shipThrusterElement) {
+        staticImageIds.thruster
+      )
+      if (
+        shipThrusterElement &&
+        shipThrusterElement instanceof HTMLImageElement
+      ) {
         ctx.drawImage(
           shipThrusterElement,
           -9 * devicePixelRatio,
@@ -57,10 +65,9 @@ const renderPlayer = ({
         )
       }
     }
-    const shipSaucer = document.getElementById(
-      `ship-saucer`
-    ) as HTMLImageElement
-    if (shipSaucer) {
+
+    const shipSaucer = document.getElementById(staticImageIds.saucer)
+    if (shipSaucer && shipSaucer instanceof HTMLImageElement) {
       ctx.drawImage(
         shipSaucer,
         -46 * devicePixelRatio,
@@ -69,15 +76,21 @@ const renderPlayer = ({
         49.2 * devicePixelRatio
       )
     }
-    ctx.drawImage(
-      avatarImage,
-      -20 * devicePixelRatio,
-      -19 * devicePixelRatio,
-      42.8 * devicePixelRatio,
-      42.8 * devicePixelRatio
-    )
-    const shipDome = document.getElementById(`ship-dome`) as HTMLImageElement
-    if (shipDome) {
+
+    // since this method is called every frame, we can just wait to draw the image
+    // until it is fully loaded
+    if (avatarImage.complete) {
+      ctx.drawImage(
+        avatarImage,
+        -20 * devicePixelRatio,
+        -19 * devicePixelRatio,
+        42.8 * devicePixelRatio,
+        42.8 * devicePixelRatio
+      )
+    }
+
+    const shipDome = document.getElementById(staticImageIds.dome)
+    if (shipDome && shipDome instanceof HTMLImageElement) {
       ctx.drawImage(
         shipDome,
         -34.3 * devicePixelRatio,
@@ -120,14 +133,8 @@ const draw = async (
         ? canvas.height - (SPACE_HEIGHT - playerCenterY)
         : Math.min(playerCenterY, canvas.height / 2)
 
-    const background = document.getElementById("background")
+    const background = document.getElementById(staticImageIds.background)
     if (background && background instanceof HTMLImageElement) {
-      if (!background.complete) {
-        await new Promise((resolve) => {
-          background.onload = resolve
-        })
-      }
-
       ctx.save()
       ctx.translate(
         -Math.min(
@@ -208,12 +215,6 @@ export const renderGame = ({
 }) => {
   if (!canvas) {
     const { innerHeight: height, innerWidth: width, devicePixelRatio } = window
-
-    console.log("canvas", {
-      height,
-      width,
-      devicePixelRatio,
-    })
 
     const canvasEl = document.getElementById("game-canvas")
     if (canvasEl instanceof HTMLCanvasElement) {
