@@ -67,7 +67,11 @@ const renderPlayer = ({
     }
 
     const shipSaucer = document.getElementById(staticImageIds.saucer)
-    if (shipSaucer && shipSaucer instanceof HTMLImageElement) {
+    if (
+      shipSaucer &&
+      shipSaucer instanceof HTMLImageElement &&
+      shipSaucer.complete
+    ) {
       ctx.drawImage(
         shipSaucer,
         -46 * devicePixelRatio,
@@ -90,7 +94,7 @@ const renderPlayer = ({
     }
 
     const shipDome = document.getElementById(staticImageIds.dome)
-    if (shipDome && shipDome instanceof HTMLImageElement) {
+    if (shipDome && shipDome instanceof HTMLImageElement && shipDome.complete) {
       ctx.drawImage(
         shipDome,
         -34.3 * devicePixelRatio,
@@ -134,7 +138,11 @@ const draw = async (
         : Math.min(playerCenterY, canvas.height / 2)
 
     const background = document.getElementById(staticImageIds.background)
-    if (background && background instanceof HTMLImageElement) {
+    if (
+      background &&
+      background instanceof HTMLImageElement &&
+      background.complete
+    ) {
       ctx.save()
       ctx.translate(
         -Math.min(
