@@ -10,7 +10,7 @@ const onJoystickMove = (controls: Controls) => {
 const onAccelerate = (acceleration: number) => {
   Rune.actions.accelerate(acceleration)
 }
-const waitForImage = async (img: HTMLImageElement, timeoutMs = 4000) => {
+const waitForImage = async (img: HTMLImageElement, timeoutMs = 10_000) => {
   if (img.complete) {
     return
   }
