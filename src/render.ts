@@ -54,7 +54,8 @@ const renderPlayer = ({
       )
       if (
         shipThrusterElement &&
-        shipThrusterElement instanceof HTMLImageElement
+        shipThrusterElement instanceof HTMLImageElement &&
+        shipThrusterElement.complete
       ) {
         ctx.drawImage(
           shipThrusterElement,
