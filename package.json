@@ -7,8 +7,9 @@
     "dev": "vite --host",
     "build": "npm run lint && tsc && vite build",
     "upload": "npm run build && npx rune@latest upload",
-    "lint": "eslint src",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint src --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,html}\""
   },
   "dependencies": {
     "nipplejs": "^0.10.2",

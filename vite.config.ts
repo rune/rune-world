@@ -7,6 +7,9 @@ import { qrcode } from "vite-plugin-qrcode"
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "", // Makes paths relative
+  build: {
+    target: "es2015",
+  },
   plugins: [
     qrcode(), // only applies in dev mode
     react(),

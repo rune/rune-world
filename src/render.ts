@@ -163,6 +163,11 @@ const draw = async (
         2048 * devicePixelRatio
       )
       ctx.restore()
+    } else {
+      console.error("Background image not found or not loaded yet", {
+        complete:
+          background && "complete" in background && background?.complete,
+      })
     }
 
     for (const body of physics.allBodies(world)) {
